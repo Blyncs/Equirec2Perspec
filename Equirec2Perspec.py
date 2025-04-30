@@ -2,6 +2,8 @@ import os
 import sys
 import cv2
 import numpy as np
+from PIL.Image import Image
+
 
 def xyz2lonlat(xyz):
     atan2 = np.arctan2
@@ -30,7 +32,13 @@ def lonlat2XY(lonlat, shape):
 
 class Equirectangular:
     def __init__(self, img_name):
-        self._img = cv2.imread(img_name, cv2.IMREAD_COLOR)
+        if isinstance(img_name, str):
+            self._img = cv2.imread(img_name, cv2.IMREAD_COLOR)
+        elif isinstance(img_name, Image):
+            # Convert PIL image to NumPy array
+            image_array = np.array(img_name)
+            # Convert RGB to BGR
+            self._img = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
         [self._height, self._width, _] = self._img.shape
         #cp = self._img.copy()  
         #w = self._width
